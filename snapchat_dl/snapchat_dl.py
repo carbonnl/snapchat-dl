@@ -39,7 +39,7 @@ class SnapchatDL:
         self.regexp_web_json = (
             r'<script\s*id="__NEXT_DATA__"\s*type="application\/json">([^<]+)<\/script>'
         )
-        self.response_ok = requests.codes.ok  # Fixed typo
+        self.response_ok = requests.codes.ok
 
     def _api_response(self, username):
         web_url = self.endpoint_web.format(username)
@@ -51,17 +51,7 @@ class SnapchatDL:
         ).text
 
     def _web_fetch_story(self, username):
-        """Download user stories from Web.
-
-        Args:
-            username (str): Snapchat `username`
-
-        Raises:
-            APIResponseError: API Error
-
-        Returns:
-            (dict, dict): user_info, stories
-        """
+        """Download user stories from Web."""
         response = self._api_response(username)
         response_json_raw = re.findall(self.regexp_web_json, response)
 
@@ -96,26 +86,18 @@ class SnapchatDL:
             raise APIResponseError
 
     def download(self, username):
-        """Download Snapchat Story for `username`.
-
-        Args:
-            username (str): Snapchat `username`
-
-        Returns:
-            [bool]: story downloader
-        """
+        """Download Snapchat Story for `username` sorted by Media Type."""
         stories, snap_user, *_ = self._web_fetch_story(username)
 
         if len(stories) == 0:
             if not self.quiet:
-                logger.info("\033[91m{}\033[0m has no stories".format(username))
-
+                logger.info(f"\033[91m{username}\033[0m has no stories")
             raise NoStoriesFound
 
         if self.limit_story > -1:
             stories = stories[: self.limit_story]
 
-        logger.info("[+] {} has {} stories".format(username, len(stories)))
+        logger.info(f"[+] {username} has {len(stories)} stories")
 
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers)
         try:
@@ -126,7 +108,16 @@ class SnapchatDL:
                 timestamp = int(media["timestampInSec"]["value"])
                 date_str = strf_time(timestamp, "%Y-%m-%d")
 
-                dir_name = os.path.join(self.directory_prefix, username, date_str)
+                # Logic to split into Images and Videos subfolders
+                if "VIDEO" in media_type.upper():
+                    type_folder = "Videos"
+                else:
+                    type_folder = "Images"
+
+                # Construct path: prefix / username / Images|Videos / date
+                dir_name = os.path.join(
+                    self.directory_prefix, username, type_folder, date_str
+                )
                 os.makedirs(dir_name, exist_ok=True)
 
                 filename = strf_time(timestamp, "%Y-%m-%d_%H-%M-%S {} {}.{}").format(
@@ -147,4 +138,4 @@ class SnapchatDL:
         except KeyboardInterrupt:
             executor.shutdown(wait=False)
 
-        logger.info("[✔] {} stories downloaded".format(username, len(stories)))
+        logger.info(f"[✔] {username} stories processing complete")
