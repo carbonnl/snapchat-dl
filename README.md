@@ -33,16 +33,10 @@ Download public Snapchat stories directly from the command line.
 
 ## Installation
 
-### Install from PyPI
-
-```bash
-pip install snapchat-dl
-```
-
 ### Install from GitHub
 
 ```bash
-pip install git+https://github.com/skyme5/snapchat-dl.git
+pip install git+https://github.com/carbonnl/snapchat-dl.git
 ```
 
 > Linux/macOS users may want to add `--user` to avoid requiring `sudo`.
