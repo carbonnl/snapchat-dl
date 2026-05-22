@@ -51,7 +51,17 @@ class SnapchatDL:
         ).text
 
     def _web_fetch_story(self, username):
-        """Download user stories from Web."""
+        """Download user stories from Web.
+
+        Args:
+            username (str): Snapchat `username`
+
+        Raises:
+            APIResponseError: API Error
+
+        Returns:
+            (dict, dict): user_info, stories
+        """
         response = self._api_response(username)
         response_json_raw = re.findall(self.regexp_web_json, response)
 
@@ -86,18 +96,26 @@ class SnapchatDL:
             raise APIResponseError
 
     def download(self, username):
-        """Download Snapchat Story for `username` sorted by Media Type."""
+        """Download Snapchat Story for `username`.
+
+        Args:
+            username (str): Snapchat `username`
+
+        Returns:
+            [bool]: story downloader
+        """
         stories, snap_user, *_ = self._web_fetch_story(username)
 
         if len(stories) == 0:
             if not self.quiet:
-                logger.info(f"\033[91m{username}\033[0m has no stories")
+                logger.info("\033[91m{}\033[0m has no stories".format(username))
+
             raise NoStoriesFound
 
         if self.limit_story > -1:
             stories = stories[: self.limit_story]
 
-        logger.info(f"[+] {username} has {len(stories)} stories")
+        logger.info("[+] {} has {} stories".format(username, len(stories)))
 
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers)
         try:
@@ -108,13 +126,16 @@ class SnapchatDL:
                 timestamp = int(media["timestampInSec"]["value"])
                 date_str = strf_time(timestamp, "%Y-%m-%d")
 
-                # Logic to split into Images and Videos subfolders
-                if "VIDEO" in media_type.upper():
+                # Map integer media code to file extension safely using your utils dictionary
+                ext = str(MEDIA_TYPE.get(media_type, "")).lower()
+
+                # Choose folder based on extension mapping
+                if ext in ["mp4", "mov", "mkv", "webm"]:
                     type_folder = "Videos"
                 else:
                     type_folder = "Images"
 
-                # Construct path: prefix / username / Images|Videos / date
+                # Build final sorted path: prefix/username/type_folder/date_str
                 dir_name = os.path.join(
                     self.directory_prefix, username, type_folder, date_str
                 )
@@ -138,4 +159,4 @@ class SnapchatDL:
         except KeyboardInterrupt:
             executor.shutdown(wait=False)
 
-        logger.info(f"[✔] {username} stories processing complete")
+        logger.info("[✔] {} stories downloaded".format(username, len(stories)))
