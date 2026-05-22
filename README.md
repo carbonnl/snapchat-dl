@@ -1,114 +1,164 @@
-<p>
-  <div align="center">
-  <h1>
-    Snapchat Public Stories Downloader<br /> <br />
-    <a href="https://pypi.python.org/pypi/snapchat-dl">
-      <img
-        src="https://img.shields.io/pypi/v/snapchat-dl.svg?cacheSeconds=360"
-        alt="Python Package"
-      />
-    </a>
-    <a href="https://pypi.python.org/pypi/snapchat-dl">
-      <img
-        src="https://img.shields.io/pypi/wheel/snapchat-dl"
-        alt="Python Wheel"
-      />
-    </a>
-    <a href="https://pypi.python.org/pypi/snapchat-dl">
-      <img
-        src="https://img.shields.io/github/actions/workflow/status/skyme5/snapchat-dl/continuous-integration-pip.yml?cacheSeconds=360"
-        alt="CI"
-      />
-    </a>
-    <a href="https://codecov.io/gh/skyme5/snapchat-dl">
-      <img
-        src="https://img.shields.io/codecov/c/github/skyme5/snapchat-dl?cacheSeconds=360"
-        alt="Code Coverage"
-      />
-    </a>
-    <a href="https://codecov.io/gh/skyme5/snapchat-dl">
-      <img
-        src="https://img.shields.io/pypi/pyversions/snapchat-dl"
-        alt="Python Versions"
-      />
-    </a>
-    <a href="https://github.com/psf/black">
-      <img
-        src="https://img.shields.io/badge/code%20style-black-000000.svg"
-        alt="The Uncompromising Code Formatter"
-      />
-    </a>
-    <a href="https://pepy.tech/project/snapchat-dl">
-      <img
-        src="https://static.pepy.tech/badge/snapchat-dl"
-        alt="Monthly Downloads"
-      />
-    </a>
-    <a href="https://opensource.org/licenses/MIT">
-      <img
-        src="https://img.shields.io/badge/License-MIT-blue.svg"
-        alt="License: MIT"
-      />
-    </a>
-  </h1>
-  <a href="https://buymeacoffee.com/skyme5" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;" ></a>
-  </div>
-</p>
+<div align="center">
+  <h1>👻 Snapchat Public Stories Downloader</h1>
+</div>
 
-### Installation
+<div align="center">
 
-Install using pip,
+Download public Snapchat stories directly from the command line.
+
+[![PyPI Version](https://img.shields.io/pypi/v/snapchat-dl.svg)](https://pypi.org/project/snapchat-dl/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/snapchat-dl)](https://pypi.org/project/snapchat-dl/)
+[![Wheel](https://img.shields.io/pypi/wheel/snapchat-dl)](https://pypi.org/project/snapchat-dl/)
+[![CI](https://img.shields.io/github/actions/workflow/status/skyme5/snapchat-dl/continuous-integration-pip.yml)](https://github.com/skyme5/snapchat-dl/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/github/skyme5/snapchat-dl)](https://codecov.io/gh/skyme5/snapchat-dl)
+[![Downloads](https://static.pepy.tech/badge/snapchat-dl)](https://pepy.tech/project/snapchat-dl)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+</div>
+
+---
+
+## Features
+
+- Download public Snapchat stories
+- Monitor accounts for new uploads
+- Batch download multiple usernames
+- Save story metadata as JSON
+- Parallel downloads for improved speed
+- Clipboard story link detection
+- Lightweight and easy-to-use CLI
+
+---
+
+## Installation
+
+### Install from PyPI
 
 ```bash
 pip install snapchat-dl
 ```
 
-Install from GitHub,
+### Install from GitHub
 
 ```bash
-pip install git+git://github.com/skyme5/snapchat-dl
+pip install git+https://github.com/skyme5/snapchat-dl.git
 ```
 
-Unix users might want to add `--user` flag to install without requiring `sudo`.
+> Linux/macOS users may want to add `--user` to avoid requiring `sudo`.
 
-### Usage
+---
+
+## Quick Start
+
+Download stories from a username:
+
+```bash
+snapchat-dl username
+```
+
+Download stories from multiple users:
+
+```bash
+snapchat-dl user1 user2 user3
+```
+
+Monitor for new stories continuously:
+
+```bash
+snapchat-dl -u username
+```
+
+Save metadata as JSON:
+
+```bash
+snapchat-dl -d username
+```
+
+---
+
+## Usage
 
 ```text
-
-usage: snapchat-dl [-h] [-c | -u] [-i BATCH_FILENAME] [-P DIRECTORY_PREFIX]
-                   [-s] [-d] [-l MAX_NUM_STORY] [-j MAX_WORKERS] [-t INTERVAL]
-                   [--sleep-interval INTERVAL] [-q]
+usage: snapchat-dl [-h] [-c | -u] [-i BATCH_FILENAME]
+                   [-P DIRECTORY_PREFIX] [-s] [-d]
+                   [-l MAX_NUM_STORY] [-j MAX_WORKERS]
+                   [-t INTERVAL] [--sleep-interval INTERVAL]
+                   [-q]
                    [username [username ...]]
-
-positional arguments:
-  username              At least one or more usernames to download stories
-                        for.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -c, --scan-clipboard  Scan clipboard for story links
-                        ('https://story.snapchat.com/<s>/<username>').
-  -u, --check-for-update
-                        Periodically check for new stories.
-  -i BATCH_FILENAME, --batch-file BATCH_FILENAME
-                        Read usernames from batch file (one username per
-                        line).
-  -P DIRECTORY_PREFIX, --directory-prefix DIRECTORY_PREFIX
-                        Location to store downloaded media.
-  -s, --scan-from-prefix
-                        Scan usernames (as directory name) from prefix
-                        directory.
-  -d, --dump-json       Save metadata to a JSON file next to downloaded
-                        videos/pictures.
-  -l MAX_NUM_STORY, --limit-story MAX_NUM_STORY
-                        Set maximum number of stories to download.
-  -j MAX_WORKERS, --max-concurrent-downloads MAX_WORKERS
-                        Set maximum number of parallel downloads.
-  -t INTERVAL, --update-interval INTERVAL
-                        Set the update interval for checking new story in
-                        seconds. (Default: 10m)
-  --sleep-interval INTERVAL
-                        Sleep between downloads in seconds. (Default: 1s)
-  -q, --quiet           Do not print anything except errors to the console.
-
 ```
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `username` | One or more usernames to download stories from |
+| `-h, --help` | Show help message |
+| `-c, --scan-clipboard` | Scan clipboard for Snapchat story links |
+| `-u, --check-for-update` | Periodically check for new stories |
+| `-i, --batch-file` | Read usernames from a file |
+| `-P, --directory-prefix` | Set download directory |
+| `-s, --scan-from-prefix` | Scan usernames from directory names |
+| `-d, --dump-json` | Save metadata as JSON |
+| `-l, --limit-story` | Limit number of stories downloaded |
+| `-j, --max-concurrent-downloads` | Set concurrent download count |
+| `-t, --update-interval` | Interval for checking new stories |
+| `--sleep-interval` | Delay between downloads |
+| `-q, --quiet` | Suppress console output except errors |
+
+---
+
+## Examples
+
+### Download stories from a single account
+
+```bash
+snapchat-dl nasa
+```
+
+### Download using a batch file
+
+```bash
+snapchat-dl -i usernames.txt
+```
+
+### Limit downloads
+
+```bash
+snapchat-dl -l 5 username
+```
+
+### Set custom output directory
+
+```bash
+snapchat-dl -P ./downloads username
+```
+
+---
+
+## Output Structure
+
+```text
+downloads/
+└── username/
+    ├── Images/
+    │   ├── image1.jpg
+    │   └── image2.jpg
+    │
+    └── Videos/
+        ├── video1.mp4
+        └── video2.mp4
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+## Disclaimer
+
+This project is intended for educational and archival purposes only.  
+Please respect Snapchat’s Terms of Service and content ownership rights.
