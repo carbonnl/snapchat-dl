@@ -124,9 +124,8 @@ class SnapchatDL:
                 media_url = media["snapUrls"]["mediaUrl"]
                 media_type = media["snapMediaType"]
                 timestamp = int(media["timestampInSec"]["value"])
-                date_str = strf_time(timestamp, "%Y-%m-%d")
 
-                # FIX: Safely grab extension using list indexing
+                # Safely grab extension using list indexing
                 try:
                     ext = str(MEDIA_TYPE[media_type]).lower()
                 except (IndexError, TypeError):
@@ -138,9 +137,10 @@ class SnapchatDL:
                 else:
                     type_folder = "Images"
 
-                # Build final sorted path: prefix/username/type_folder/date_str
+                # FIX: Removed 'date_str' from the path construction entirely
+                # The path is now strictly: prefix/username/type_folder
                 dir_name = os.path.join(
-                    self.directory_prefix, username, type_folder, date_str
+                    self.directory_prefix, username, type_folder
                 )
                 os.makedirs(dir_name, exist_ok=True)
 
