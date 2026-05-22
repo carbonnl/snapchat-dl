@@ -126,8 +126,11 @@ class SnapchatDL:
                 timestamp = int(media["timestampInSec"]["value"])
                 date_str = strf_time(timestamp, "%Y-%m-%d")
 
-                # Map integer media code to file extension safely using your utils dictionary
-                ext = str(MEDIA_TYPE.get(media_type, "")).lower()
+                # FIX: Safely grab extension using list indexing
+                try:
+                    ext = str(MEDIA_TYPE[media_type]).lower()
+                except (IndexError, TypeError):
+                    ext = ""
 
                 # Choose folder based on extension mapping
                 if ext in ["mp4", "mov", "mkv", "webm"]:
